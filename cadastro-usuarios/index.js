@@ -29,6 +29,7 @@ app.get('/usuarios', (req, res) => {
 
 // Rota POST para criar um novo usuário
 app.post('/usuarios', (req, res) => {
+    console.log('Request Body:', req.body); // Adicione este log
     const { cpf, nome, categoria } = req.body;
     try {
         const stmt = db.prepare('INSERT INTO usuarios (cpf, nome, categoria) VALUES (?, ?, ?)');

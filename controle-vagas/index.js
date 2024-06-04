@@ -16,13 +16,23 @@ const db = new Database(dbPath);
 const app = express();
 app.use(express.json());
 
-
-
 app.get('/vagas', (req, res) => {
     try {
         const stmt = db.prepare('SELECT * FROM vagas');
         const rows = stmt.all();
         res.status(200).send(rows);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+app.post('/vagas', (req, res) => {
+    console.log('Request Body:', req.body); // Adicione este log
+    const { estacionamento, vagasDisponiveis } = req.body;
+    try {
+        const stmt = db.prepare('INSERT INTO vagas (estacionamento, vagasDisponiveis) VALUES (?, ?)');
+        const info = stmt.run(estacionamento, vagasDisponiveis);
+        res.status(201).send({ id: info.lastInsertRowid });
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -34,7 +44,7 @@ app.put('/vagas/:estacionamento', (req, res) => {
     try {
         const stmt = db.prepare('UPDATE vagas SET vagasDisponiveis = ? WHERE estacionamento = ?');
         const info = stmt.run(vagasDisponiveis, estacionamento);
-        res.status(200).send({ changes: info.changes });
+        res.status(202).send({ changes: info.changes });
     } catch (err) {
         res.status(500).send(err.message);
     }
