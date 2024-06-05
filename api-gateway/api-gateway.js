@@ -8,7 +8,7 @@ app.use(logger('dev'));
 function selectProxyHost(req) {
     if (req.path.startsWith('/usuarios'))
         return 'http://localhost:3001/';
-    else if (req.path.startsWith('/acessos'))
+    else if (req.path.startsWith('/acesso'))
         return 'http://localhost:3004/';
     else if (req.path.startsWith('/creditos'))
         return 'http://localhost:3002/';
