@@ -25,8 +25,10 @@ app.post('/acesso/entrada', (req, res) => {
             const updateVagasStmt = db.prepare('UPDATE vagas SET vagasDisponiveis = vagasDisponiveis - 1 WHERE estacionamento = ?');
             updateVagasStmt.run(estacionamento);
 
-            const entradaStmt = db.prepare('INSERT INTO acessos (cpf, estacionamento, tipo, data) VALUES (?, ?, "entrada", datetime("now"))');
-            entradaStmt.run(cpf, estacionamento);
+            /*const entradaStmt = db.prepare('INSERT INTO acessos (cpf, estacionamento, tipo, data) VALUES (?, ?, "entrada", datetime("now"))');
+            entradaStmt.run(cpf, estacionamento);*/
+            const entradaStmt = db.prepare('INSERT INTO acessos (cpf, estacionamento, tipo, data) VALUES (?, ?, ?, datetime(\'now\'))');
+            entradaStmt.run(cpf, estacionamento, 'entrada');
             res.status(200).send({ message: "Entrada permitida" });
         } else {
             res.status(403).send({ message: "Estacionamento lotado" });
@@ -37,8 +39,8 @@ app.post('/acesso/entrada', (req, res) => {
 app.post('/acesso/saida', (req, res) => {
     const { cpf, estacionamento } = req.body;
     db.transaction(() => {
-        const saidaStmt = db.prepare('INSERT INTO acessos (cpf, estacionamento, tipo, data) VALUES (?, ?, "saida", datetime("now"))');
-        saidaStmt.run(cpf, estacionamento);
+        const entradaStmt = db.prepare('INSERT INTO acessos (cpf, estacionamento, tipo, data) VALUES (?, ?, ?, datetime(\'now\'))');
+            entradaStmt.run(cpf, estacionamento, 'saida');
 
         const updateVagasStmt = db.prepare('UPDATE vagas SET vagasDisponiveis = vagasDisponiveis + 1 WHERE estacionamento = ?');
         updateVagasStmt.run(estacionamento);
